@@ -897,6 +897,56 @@
                 display: block;
             }
 
+        .mine-chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .mine-chip {
+            font-family: 'Jost',sans-serif;
+            font-size: 10.5px;
+            padding: 5px 11px;
+            border-radius: 20px;
+            border: 1px solid var(--sage);
+            background: #fff;
+            color: var(--sage-dark);
+            cursor: pointer;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+            .mine-chip.active {
+                background: var(--sage);
+                color: #fff;
+                font-weight: 500;
+            }
+
+            .mine-chip.add {
+                border-style: dashed;
+                border-color: var(--gold);
+                color: #8a6a37;
+            }
+
+        /* .card p would otherwise win on specificity and blow this up to
+           16px, the same trap the disclaimer fell into */
+        .slot-note, .card p.slot-note {
+            font-family: 'Jost',sans-serif;
+            font-size: 10px;
+            letter-spacing: .04em;
+            color: var(--text-soft);
+            text-align: center;
+            margin: 6px 0 0;
+        }
+
+            .slot-note.full, .card p.slot-note.full {
+                color: #a15353;
+            }
+
             .update-banner .newguest {
                 display: inline-block;
                 margin-top: 4px;
@@ -1343,9 +1393,10 @@
 
             <div class="card">
                 <div class="update-banner" id="updateBanner">
-                    You have already submitted an RSVP from this device. The form below has been pre-filled &mdash; edit and resubmit it to update your RSVP.
-                    <span class="newguest" onclick="newGuestForm()">Not you? Fill out new form.</span>
+                    <div id="mineNote">You have already submitted an RSVP from this device. The form below has been pre-filled &mdash; edit and resubmit it to update your RSVP.</div>
+                    <div class="mine-chips" id="mineChips"></div>
                 </div>
+                <p class="slot-note" id="slotNote"></p>
                 <p class="muted" style="margin-bottom:4px;">Sila sahkan kehadiran anda ke majlis perkahwinan kami.</p>
                 <form id="attendForm" novalidate>
                     <div class="field">
@@ -1862,6 +1913,12 @@ document.querySelectorAll('.radio-opt').forEach(opt => {
    ========================================================= */
 const DEVICE_STORE = 'wm_device', MINE_STORE = 'wm_myrsvp';
 
+/* how many people this phone may register. The page shows it and keeps
+   the form honest, but the DATABASE is what actually enforces it -- a
+   counter kept only in the browser is cleared in three taps. */
+let DEVICE_SLOTS = { used: 0, max: 3, left: 3 };
+let EDITING_KEY  = null;      // which of this device's entries is loaded
+
 function newDeviceId(){
   try{
     if (crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -1883,45 +1940,129 @@ let DEVICE_ID = (function(){
   }
 })();
 
-function loadMine(){
-  try{ return JSON.parse(localStorage.getItem(MINE_STORE) || 'null'); }catch(e){ return null; }
-}
-function saveMine(entry){
-  try{ localStorage.setItem(MINE_STORE, JSON.stringify(entry)); }catch(e){}
+/* same normalisation the database uses, so the page and the server
+   agree on what counts as "the same person" */
+function nameKey(s){
+  return String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
 }
 
-/* prefill so the guest edits their real answers rather than
-   retyping them -- which is what makes an empty Ucapan box mean
-   "I removed it" instead of "I forgot to type it again" */
-function prefillMine(){
-  const mine = loadMine();
-  if (!mine) return;
-  document.getElementById('atName').value = mine.name || '';
-  document.getElementById('atWish').value = mine.wish || '';
-  document.getElementById('atPax').value  = clampPax(mine.pax);
-  const hadir = (mine.status !== 'Tidak Hadir');
+/* this device's own submissions, newest first */
+function loadMine(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(MINE_STORE) || 'null');
+    if (!raw) return [];
+    return Array.isArray(raw) ? raw : [raw];   // migrate the old single-entry format
+  }catch(e){ return []; }
+}
+function saveMine(entry){
+  try{
+    const list = loadMine().filter(m => nameKey(m.name) !== nameKey(entry.name));
+    list.unshift(entry);
+    localStorage.setItem(MINE_STORE, JSON.stringify(list.slice(0, 10)));
+  }catch(e){}
+}
+
+function fillForm(entry){
+  document.getElementById('atName').value = entry ? (entry.name || '') : '';
+  document.getElementById('atWish').value = entry ? (entry.wish || '') : '';
+  document.getElementById('atPax').value  = clampPax(entry ? entry.pax : 1);
+  const hadir = !entry || entry.status !== 'Tidak Hadir';
   document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
   const opt = document.getElementById(hadir ? 'optHadir' : 'optTidak');
   opt.classList.add('selected');
   opt.querySelector('input').checked = true;
   renderPax(); renderWishCount();
-  document.getElementById('updateBanner').classList.add('show');
-  setSubmitLabel(true);
 }
+
+/* prefill so the guest edits their real answers rather than retyping
+   them -- which is what makes an empty Ucapan box mean "I removed it"
+   instead of "I forgot to type it again" */
+function prefillMine(){
+  const list = loadMine();
+  if (!list.length){ renderMine(); return; }
+  EDITING_KEY = nameKey(list[0].name);
+  fillForm(list[0]);
+  setSubmitLabel(true);
+  renderMine();
+}
+
+function selectMine(key){
+  const entry = loadMine().find(m => nameKey(m.name) === key);
+  if (!entry) return;
+  EDITING_KEY = key;
+  fillForm(entry);
+  setSubmitLabel(true);
+  document.getElementById('atResult').innerHTML = '';
+  renderMine();
+}
+
 function newGuestForm(){
+  if (DEVICE_SLOTS.left <= 0){
+    showToast('This device has already registered ' + DEVICE_SLOTS.max + ' guests.');
+    renderMine();
+    return;
+  }
+  EDITING_KEY = null;
   document.getElementById('attendForm').reset();
-  document.getElementById('atName').value = '';
-  document.getElementById('atWish').value = '';
-  document.getElementById('atPax').value  = 1;
-  document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
-  document.getElementById('optHadir').classList.add('selected');
-  document.getElementById('optHadir').querySelector('input').checked = true;
-  renderPax(); renderWishCount();
-  document.getElementById('updateBanner').classList.remove('show');
+  fillForm(null);
   document.getElementById('atResult').innerHTML = '';
   setSubmitLabel(false);
+  renderMine();
   document.getElementById('atName').focus();
 }
+
+/* banner + the chips that let a guest switch between the entries this
+   phone owns, and the line telling them how many slots are left */
+function renderMine(){
+  const list    = loadMine();
+  const banner  = document.getElementById('updateBanner');
+  const note    = document.getElementById('mineNote');
+  const chips   = document.getElementById('mineChips');
+  const slotEl  = document.getElementById('slotNote');
+
+  if (list.length){
+    banner.classList.add('show');
+    note.innerHTML = EDITING_KEY
+      ? 'Editing the RSVP saved on this device. Change anything below and resubmit to update it.'
+      : 'New guest &mdash; this will be saved as a separate RSVP on this device.';
+    chips.innerHTML = list.map(m =>
+      '<span class="mine-chip' + (nameKey(m.name) === EDITING_KEY ? ' active' : '') + '" ' +
+        'onclick="selectMine(\'' + escapeHTML(nameKey(m.name)).replace(/'/g, "\\'") + '\')">' +
+        escapeHTML(m.name) + '</span>').join('') +
+      (DEVICE_SLOTS.left > 0
+        ? '<span class="mine-chip add" onclick="newGuestForm()">+ New guest</span>'
+        : '');
+  } else {
+    banner.classList.remove('show');
+    chips.innerHTML = '';
+  }
+
+  if (slotEl){
+    if (DEVICE_SLOTS.left <= 0){
+      slotEl.textContent = 'This device has registered ' + DEVICE_SLOTS.used + ' of ' +
+                           DEVICE_SLOTS.max + ' guests. You can still update the entries above.';
+      slotEl.classList.add('full');
+    } else if (DEVICE_SLOTS.used > 0){
+      slotEl.textContent = DEVICE_SLOTS.used + ' of ' + DEVICE_SLOTS.max +
+                           ' guests registered from this device.';
+      slotEl.classList.remove('full');
+    } else {
+      slotEl.textContent = '';
+      slotEl.classList.remove('full');
+    }
+  }
+}
+
+/* ask the database how many registrations this phone has left */
+async function refreshSlots(){
+  if (!sbReady()) return;
+  try{
+    const d = await sbRpc('device_slots', { p_device: DEVICE_ID });
+    if (d) DEVICE_SLOTS = { used: d.used, max: d.max, left: d.left };
+  }catch(e){ console.error(e); }
+  renderMine();
+}
+
 function setSubmitLabel(isUpdate){
   const btn = document.getElementById('atSubmitBtn');
   btn.dataset.mode = isUpdate ? 'update' : 'new';
@@ -2090,6 +2231,16 @@ document.getElementById('attendForm').addEventListener('submit', async function(
   if (!name){ showToast('Sila isi nama penuh anda.'); document.getElementById('atName').focus(); return; }
   if (!sbReady()){ showToast('Pangkalan data belum disambung (sila isi SUPABASE di dalam fail).'); return; }
 
+  /* a name this device has not used before is a NEW registration, and
+     those are the ones the quota limits. Catching it here saves a round
+     trip; the database refuses it anyway if this check is bypassed. */
+  const isNewPerson = !loadMine().some(m => nameKey(m.name) === nameKey(name));
+  if (isNewPerson && DEVICE_SLOTS.left <= 0){
+    showToast('This device has already registered ' + DEVICE_SLOTS.max +
+              ' guests. You can only update the entries above.');
+    return;
+  }
+
   setSubmitBusy(true, 'Menghantar...');
   try{
     /* 1 — is this the owner's code rather than a guest name? */
@@ -2108,6 +2259,11 @@ document.getElementById('attendForm').addEventListener('submit', async function(
     const out = await sbRpc('submit_rsvp', { p_name:name, p_wish:wish, p_pax:pax, p_status:status, p_device:DEVICE_ID });
     showToast(out && out.replaced ? 'Rekod anda telah dikemaskini ✓' : 'Terima kasih! Kehadiran anda direkodkan ✓');
     saveMine({ name:name, wish:wish, pax:pax, status:status });
+    EDITING_KEY = nameKey(name);
+    if (out && out.slots_max){
+      DEVICE_SLOTS = { used: out.slots_used, max: out.slots_max,
+                       left: Math.max(0, out.slots_max - out.slots_used) };
+    }
     document.getElementById('atResult').innerHTML =
       '<div class="wish-item" style="text-align:center;">' +
         '<div class="who" style="justify-content:center;">' + escapeHTML(name) + ' &middot; ' + pax + ' pax</div>' +
@@ -2123,13 +2279,22 @@ document.getElementById('attendForm').addEventListener('submit', async function(
     if (out && out.has_wish) loadWishes();
     /* the form is left filled in on purpose -- it is now this guest's
        own record, ready to be corrected rather than retyped */
-    document.getElementById('updateBanner').classList.add('show');
     setSubmitLabel(true);
+    renderMine();
   }catch(err){
     console.error(err);
-    showToast(String(err).indexOf('RESERVED_NAME') > -1
-      ? 'Nama tersebut tidak boleh digunakan.'
-      : 'Sambungan gagal. Sila semak internet dan cuba lagi.');
+    const msg = String(err);
+    if (msg.indexOf('DEVICE_LIMIT') > -1){
+      /* the page thought there was room but the database disagreed --
+         its count is the real one, so take it and redraw */
+      showToast('This device has already registered ' + DEVICE_SLOTS.max +
+                ' guests. You can only update the entries above.');
+      refreshSlots();
+    } else {
+      showToast(msg.indexOf('RESERVED_NAME') > -1
+        ? 'Nama tersebut tidak boleh digunakan.'
+        : 'Sambungan gagal. Sila semak internet dan cuba lagi.');
+    }
   }finally{
     setSubmitBusy(false);
   }
@@ -2209,6 +2374,7 @@ async function removeWish(id){
   loadWishes();
   setSubmitLabel(false);
   prefillMine();          /* returning guest? open their own answers */
+  refreshSlots();         /* how many registrations this phone has left */
 })();
 
 /* =========================================================
