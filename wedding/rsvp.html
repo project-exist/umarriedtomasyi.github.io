@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Umar &amp; Masyitah — Walimatul Urus</title>
     <meta name="description" content="Kad Kahwin Digital Umar &amp; Masyitah — 19 Disember 2026">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Mrs+Saint+Delafield&family=Beau+Rivage&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -874,12 +875,49 @@
                 display: none;
             }
 
+        /* ---------- returning guest ---------- */
+        .update-banner {
+            font-family: 'Jost',sans-serif;
+            font-size: 11px;
+            line-height: 1.6;
+            text-align: center;
+            background: rgba(150,163,124,.12);
+            border: 1px solid var(--sage);
+            color: var(--sage-dark);
+            border-radius: 12px;
+            padding: 9px 12px;
+            margin: 0 0 4px;
+            display: none;
+        }
+
+            .update-banner.show {
+                display: block;
+            }
+
+            .update-banner .newguest {
+                display: inline-block;
+                margin-top: 4px;
+                color: var(--rose-dark);
+                text-decoration: underline;
+                cursor: pointer;
+                font-size: 10.5px;
+            }
+
+        .badge.dupe {
+            background: rgba(182,144,90,.18);
+            color: #8a6a37;
+            margin-left: 6px;
+            white-space: nowrap;
+            font-size: 9px;
+        }
+
         /* ---------- guestbook ---------- */
         .wish-head {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             gap: 10px;
+            width: 100%;
         }
 
         .wish-del {
@@ -1047,6 +1085,10 @@
                 font-size: 13px;
                 font-weight: 500;
                 color: var(--rose-dark);
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 2px 0;
             }
 
             .wish-item .msg {
@@ -1070,10 +1112,10 @@
             padding: 20px 0;
         }
 
+        /* .wish-head lays out the top row, so the card itself must stack:
+           otherwise the guest message sits beside the status badge */
         .attend-list .wish-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: block;
         }
 
         .badge {
@@ -1297,6 +1339,10 @@
             </div>
 
             <div class="card">
+                <div class="update-banner" id="updateBanner">
+                    Anda telah menghantar RSVP dari peranti ini. Borang di bawah telah diisi &mdash; ubah dan hantar semula untuk mengemaskini.
+                    <span class="newguest" onclick="newGuestForm()">Bukan anda? Isi borang baharu</span>
+                </div>
                 <p class="muted" style="margin-bottom:4px;">Sila sahkan kehadiran anda ke majlis perkahwinan kami.</p>
                 <form id="attendForm" novalidate>
                     <div class="field">
@@ -1333,7 +1379,7 @@
                         Hantar Pengesahan
                     </button>
                 </form>
-                <p class="disclaimer">Jika anda menghantar semula menggunakan nama yang sama, rekod terkini akan menggantikan rekod terdahulu. Terima kasih atas kerjasama anda.</p>
+                <p class="disclaimer">Anda boleh menghantar semula dari peranti yang sama untuk mengemaskini rekod anda. Terima kasih atas kerjasama anda.</p>
             </div>
 
             <div id="atResult"></div>
@@ -1394,7 +1440,7 @@
             </div>
 
             <div class="card" style="text-align:center;">
-                <p style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--rose-dark); margin:0px 0;">Sabtu   <spa class="df-pipe">|</span>  19 Disember 2026</p>
+                <p style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--rose-dark); margin:0px 0;">Sabtu   <span class="df-pipe">|</span>  19 Disember 2026</p>
                 <p style="font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:300; color:var(--gray); margin:0px 0;">9 Rejab 1448H</p>
                 <p style="font-size:25px;">11.00 AM – 4.00 PM</p>
             </div>
@@ -1444,7 +1490,7 @@
                     <a class="icon-btn wa" href="https://wa.me/60133181957" target="_blank" rel="noopener" aria-label="WhatsApp">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19L4 20Z" /></svg>
                     </a>
-                    <a class="icon-btn" href="tel:+60100000000" aria-label="Call">
+                    <a class="icon-btn" href="tel:+60133181957" aria-label="Call">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" /></svg>
                     </a>
                 </div>
@@ -1544,608 +1590,708 @@
 
     <script>
 /* =========================================================
-           CONFIG — edit these values to update the site quickly
-           ========================================================= */
+   CONFIG — edit these values to update the site quickly
+   ========================================================= */
 const WEDDING = {
-          groom: "Mohamad Umar Ariff",
-          bride: "Masyitah Hasanuddin",
-          startISO: "2026-12-19T11:00:00+08:00",
-          endISO:   "2026-12-19T16:00:00+08:00",
-          venueName: "CMi Prestige Hall",
-          venueAddress: "CMi Prestige Hall Tanah Putih, Lot 16606, Batu 3, Industrial Area, 25150 Kuantan, Pahang"
+  groom: "Mohamad Umar Ariff",
+  bride: "Masyitah Hasanuddin",
+  startISO: "2026-12-19T11:00:00+08:00",
+  endISO:   "2026-12-19T16:00:00+08:00",
+  venueName: "CMi Prestige Hall",
+  venueAddress: "CMi Prestige Hall Tanah Putih, Lot 16606, Batu 3, Industrial Area, 25150 Kuantan, Pahang"
 };
 
 /* ---------------------------------------------------------
-           SUPABASE — paste the two values from your project here:
-           Supabase dashboard -> Settings -> API
-             url     = "Project URL"
-             anonKey = "anon public" key
-           The anon key is MEANT to be public. Safety comes from the
-           SQL in supabase-setup.sql: the table is closed to everyone
-           and the guest list only comes back if the database itself
-           approves the owner code. The owner code is NOT in this file.
-           --------------------------------------------------------- */
+   SUPABASE — paste the two values from your project here:
+   Supabase dashboard -> Settings -> API
+     url     = "Project URL"
+     anonKey = "anon public" key
+   The anon key is MEANT to be public. Safety comes from the
+   SQL in supabase-setup.sql: the table is closed to everyone
+   and the guest list only comes back if the database itself
+   approves the owner code. The owner code is NOT in this file.
+   --------------------------------------------------------- */
 const SUPABASE = {
-          url:     "https://zdlyvtdmzdfdwnoaqlaz.supabase.co",
-          anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkbHl2dGRtemRmZHdub2FxbGF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQxNjYsImV4cCI6MjEwNTM4MDE2Nn0.NpWKaXe0vT6NolORzb_sUCVCVhF7wZ7gF6DwZ1gW_I8"
+  url:     "https://zdlyvtdmzdfdwnoaqlaz.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkbHl2dGRtemRmZHdub2FxbGF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQxNjYsImV4cCI6MjEwNTM4MDE2Nn0.NpWKaXe0vT6NolORzb_sUCVCVhF7wZ7gF6DwZ1gW_I8"
 };
 
 /* =========================================================
-           CLICK SOUND — small synthesized "pop" on taps, no audio file needed
-           ========================================================= */
+   CLICK SOUND — small synthesized "pop" on taps, no audio file needed
+   ========================================================= */
 let wmAudioCtx;
 function playClick(){
-          try{
-            wmAudioCtx = wmAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
-            if (wmAudioCtx.state === 'suspended') wmAudioCtx.resume();
-            const t = wmAudioCtx.currentTime;
-            const osc = wmAudioCtx.createOscillator();
-            const gain = wmAudioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(920, t);
-            osc.frequency.exponentialRampToValueAtTime(480, t + 0.09);
-            gain.gain.setValueAtTime(0.001, t);
-            gain.gain.exponentialRampToValueAtTime(0.22, t + 0.01);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
-            osc.connect(gain).connect(wmAudioCtx.destination);
-            osc.start(t);
-            osc.stop(t + 0.14);
-          }catch(e){}
+  try{
+    wmAudioCtx = wmAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (wmAudioCtx.state === 'suspended') wmAudioCtx.resume();
+    const t = wmAudioCtx.currentTime;
+    const osc = wmAudioCtx.createOscillator();
+    const gain = wmAudioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(920, t);
+    osc.frequency.exponentialRampToValueAtTime(480, t + 0.09);
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.exponentialRampToValueAtTime(0.22, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+    osc.connect(gain).connect(wmAudioCtx.destination);
+    osc.start(t);
+    osc.stop(t + 0.14);
+  }catch(e){}
 }
 document.addEventListener('click', function(e){
-          const el = e.target.closest('.nav-btn, .tutup, .btn, .intro-btn, .icon-btn, .radio-opt, button');
-          if (el) playClick();
+  const el = e.target.closest('.nav-btn, .tutup, .btn, .intro-btn, .icon-btn, .radio-opt, button');
+  if (el) playClick();
 }, true);
 
 /* =========================================================
-           INTRO COVER
-           ========================================================= */
+   INTRO COVER
+   ========================================================= */
 function openInvite(){
-          document.getElementById('intro').classList.add('hidden');
-          document.querySelector('.app').classList.remove('pre-open');
-          try{ sessionStorage.setItem('wm_opened','1'); }catch(e){}
-          playMusic();
+  document.getElementById('intro').classList.add('hidden');
+  document.querySelector('.app').classList.remove('pre-open');
+  try{ sessionStorage.setItem('wm_opened','1'); }catch(e){}
+  playMusic();
 }
 (function initIntro(){
-          try{
-            if (sessionStorage.getItem('wm_opened') === '1'){
-              document.getElementById('intro').classList.add('hidden');
-              document.querySelector('.app').classList.remove('pre-open');
-            }
-          }catch(e){}
+  try{
+    if (sessionStorage.getItem('wm_opened') === '1'){
+      document.getElementById('intro').classList.add('hidden');
+      document.querySelector('.app').classList.remove('pre-open');
+    }
+  }catch(e){}
 })();
 
 /* =========================================================
-           BACKGROUND MUSIC — AUTOPLAY
-           ---------------------------------------------------------
-           Every modern browser blocks audio that starts on its own
-           with the sound on. Nothing in this file can override that,
-           so the song chases the earliest legal moment instead:
+   BACKGROUND MUSIC — AUTOPLAY
+   ---------------------------------------------------------
+   Every modern browser blocks audio that starts on its own
+   with the sound on. Nothing in this file can override that,
+   so the song chases the earliest legal moment instead:
 
-             1. On load, try to play WITH sound. This succeeds on
-                desktop and on phones where the guest has opened the
-                site before (browsers remember repeat visitors).
-             2. If refused, start playing MUTED immediately -- muted
-                autoplay is always permitted. The song is already
-                running silently and in sync, ready to be heard.
-             3. Unmute on the guest's first touch anywhere on the
-                page: the cover button, a scroll, any tap at all.
-                Because it is already playing, unmuting is instant
-                with no loading gap.
+     1. On load, try to play WITH sound. This succeeds on
+        desktop and on phones where the guest has opened the
+        site before (browsers remember repeat visitors).
+     2. If refused, start playing MUTED immediately -- muted
+        autoplay is always permitted. The song is already
+        running silently and in sync, ready to be heard.
+     3. Unmute on the guest's first touch anywhere on the
+        page: the cover button, a scroll, any tap at all.
+        Because it is already playing, unmuting is instant
+        with no loading gap.
 
-           Careful detail: once we are in muted fallback, we must NOT
-           retry an unmuted play() on our own. Chrome PAUSES a muted
-           element the moment you unmute it without a gesture, so a
-           well-meaning retry would silently kill the playback. Only
-           a real gesture is allowed to unmute.
-           ========================================================= */
+   Careful detail: once we are in muted fallback, we must NOT
+   retry an unmuted play() on our own. Chrome PAUSES a muted
+   element the moment you unmute it without a gesture, so a
+   well-meaning retry would silently kill the playback. Only
+   a real gesture is allowed to unmute.
+   ========================================================= */
 let musicTriedAudible = false;   // step 1 attempted?
 let musicUnlocked     = false;   // sound is allowed now
 let musicUserPaused   = false;   // guest pressed the speaker button
 
 function setMusicIcon(audible){
-          const on  = document.getElementById('musicIconOn');
-          const off = document.getElementById('musicIconOff');
-          const btn = document.getElementById('musicToggle');
-          if (on)  on.style.display  = audible ? '' : 'none';
-          if (off) off.style.display = audible ? 'none' : '';
-          if (btn) btn.classList.toggle('playing', audible);
+  const on  = document.getElementById('musicIconOn');
+  const off = document.getElementById('musicIconOff');
+  const btn = document.getElementById('musicToggle');
+  if (on)  on.style.display  = audible ? '' : 'none';
+  if (off) off.style.display = audible ? 'none' : '';
+  if (btn) btn.classList.toggle('playing', audible);
 }
 function bgmEl(){ return document.getElementById('bgm'); }
 function musicAudible(){
-          const a = bgmEl();
-          return !!a && !a.paused && !a.muted;
+  const a = bgmEl();
+  return !!a && !a.paused && !a.muted;
 }
 
 /* step 2 — silent playback, always allowed */
 function startMuted(){
-          const a = bgmEl();
-          if (!a || musicUserPaused) return;
-          a.muted = true;
-          const r = a.play();
-          if (r && r.catch) r.catch(()=>{});
+  const a = bgmEl();
+  if (!a || musicUserPaused) return;
+  a.muted = true;
+  const r = a.play();
+  if (r && r.catch) r.catch(()=>{});
 }
 
 /* step 1 — the audible attempt (also used by any real gesture) */
 function playMusic(){
-          const a = bgmEl();
-          if (!a) return Promise.resolve(false);
-          musicTriedAudible = true;
-          a.muted = false;
-          a.volume = 1;
-          return a.play()
-            .then(() => { musicUnlocked = true; setMusicIcon(true); return true; })
-            .catch(() => { startMuted(); setMusicIcon(false); return false; });
+  const a = bgmEl();
+  if (!a) return Promise.resolve(false);
+  musicTriedAudible = true;
+  a.muted = false;
+  a.volume = 1;
+  return a.play()
+    .then(() => { musicUnlocked = true; setMusicIcon(true); return true; })
+    .catch(() => { startMuted(); setMusicIcon(false); return false; });
 }
 
 /* step 3 — first gesture of any kind turns the sound on */
 const MUSIC_EVENTS = ['pointerdown','touchstart','mousedown','keydown','scroll','click'];
 function musicUnlock(e){
-          /* let the speaker button speak for itself, otherwise a guest
-             tapping it to start would have us start it and the button
-             immediately stop it again */
-          if (e && e.target && e.target.closest && e.target.closest('#musicToggle')) return;
-          const a = bgmEl();
-          if (!a) return;
-          a.muted = false;
-          a.volume = 1;
-          a.play().then(() => {
-            musicUnlocked = true;
-            musicUserPaused = false;
-            setMusicIcon(true);
-            disarmMusic();
-          }).catch(()=>{ a.muted = true; });
+  /* let the speaker button speak for itself, otherwise a guest
+     tapping it to start would have us start it and the button
+     immediately stop it again */
+  if (e && e.target && e.target.closest && e.target.closest('#musicToggle')) return;
+  const a = bgmEl();
+  if (!a) return;
+  a.muted = false;
+  a.volume = 1;
+  a.play().then(() => {
+    musicUnlocked = true;
+    musicUserPaused = false;
+    setMusicIcon(true);
+    disarmMusic();
+  }).catch(()=>{ a.muted = true; });
 }
 function armMusic(){ MUSIC_EVENTS.forEach(ev => window.addEventListener(ev, musicUnlock, true)); }
 function disarmMusic(){ MUSIC_EVENTS.forEach(ev => window.removeEventListener(ev, musicUnlock, true)); }
 
 function toggleMusic(){
-          const a = bgmEl();
-          if (!a) return;
-          if (musicAudible()){
-            musicUserPaused = true;
-            a.pause();
-            setMusicIcon(false);
-          } else {
-            musicUserPaused = false;
-            a.muted = false;
-            a.volume = 1;
-            a.play().then(()=>{ musicUnlocked = true; setMusicIcon(true); disarmMusic(); }).catch(()=>{});
-          }
+  const a = bgmEl();
+  if (!a) return;
+  if (musicAudible()){
+    musicUserPaused = true;
+    a.pause();
+    setMusicIcon(false);
+  } else {
+    musicUserPaused = false;
+    a.muted = false;
+    a.volume = 1;
+    a.play().then(()=>{ musicUnlocked = true; setMusicIcon(true); disarmMusic(); }).catch(()=>{});
+  }
 }
 
 /* keep the speaker icon honest, and recover from interruptions
-           (incoming call, another app grabbing the audio, tab switch) */
+   (incoming call, another app grabbing the audio, tab switch) */
 (function initMusic(){
-          const a = bgmEl();
-          if (!a) return;
+  const a = bgmEl();
+  if (!a) return;
 
-          ['play','pause','volumechange'].forEach(ev =>
-            a.addEventListener(ev, () => setMusicIcon(musicAudible())));
+  ['play','pause','volumechange'].forEach(ev =>
+    a.addEventListener(ev, () => setMusicIcon(musicAudible())));
 
-          /* if the file is still buffering, keep the silent track rolling
-             so it is ready the moment a finger lands -- muted only */
-          a.addEventListener('canplay', () => {
-            if (a.paused && !musicUserPaused){
-              if (!musicTriedAudible) playMusic(); else startMuted();
-            }
-          });
+  /* if the file is still buffering, keep the silent track rolling
+     so it is ready the moment a finger lands -- muted only */
+  a.addEventListener('canplay', () => {
+    if (a.paused && !musicUserPaused){
+      if (!musicTriedAudible) playMusic(); else startMuted();
+    }
+  });
 
-          document.addEventListener('visibilitychange', () => {
-            if (document.hidden || musicUserPaused) return;
-            if (a.paused){ musicUnlocked ? a.play().catch(()=>{}) : startMuted(); }
-          });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || musicUserPaused) return;
+    if (a.paused){ musicUnlocked ? a.play().catch(()=>{}) : startMuted(); }
+  });
 
-          playMusic();   // step 1, right now
-          armMusic();    // step 3, standing by
-          window.addEventListener('load', () => {
-            if (a.paused && !musicUserPaused) startMuted();
-          });
+  playMusic();   // step 1, right now
+  armMusic();    // step 3, standing by
+  window.addEventListener('load', () => {
+    if (a.paused && !musicUserPaused) startMuted();
+  });
 })();
 
 /* =========================================================
-           SHEET NAVIGATION (Lokasi / Kalendar / Hubungi)
-           ========================================================= */
+   SHEET NAVIGATION (Lokasi / Kalendar / Ucapan / Hubungi)
+   ========================================================= */
 function closeSheets(){
-          document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
-          document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 }
 function toggleSheet(name){
-          const el = document.getElementById('sheet-' + name);
-          const isOpen = el.classList.contains('open');
-          closeSheets();
-          if (!isOpen){
-            el.classList.add('open');
-            el.scrollTop = 0;
-            document.querySelector(`.nav-btn[data-sheet="${name}"]`).classList.add('active');
-          }
+  const el = document.getElementById('sheet-' + name);
+  const isOpen = el.classList.contains('open');
+  closeSheets();
+  if (!isOpen){
+    el.classList.add('open');
+    el.scrollTop = 0;
+    document.querySelector(`.nav-btn[data-sheet="${name}"]`).classList.add('active');
+  }
 }
 
 /* =========================================================
-           COUNTDOWN
-           ========================================================= */
+   COUNTDOWN
+   ========================================================= */
 function updateCountdown(){
-          const target = new Date(WEDDING.startISO).getTime();
-          let diff = target - Date.now();
-          if (diff < 0) diff = 0;
-          const d = Math.floor(diff / 86400000);
-          const h = Math.floor((diff % 86400000) / 3600000);
-          const m = Math.floor((diff % 3600000) / 60000);
-          const s = Math.floor((diff % 60000) / 1000);
-          document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
-          document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-          document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
-          document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  const target = new Date(WEDDING.startISO).getTime();
+  let diff = target - Date.now();
+  if (diff < 0) diff = 0;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
 /* =========================================================
-           RADIO TOGGLE (attendance)
-           ========================================================= */
+   RADIO TOGGLE (attendance)
+   ========================================================= */
 document.querySelectorAll('.radio-opt').forEach(opt => {
-          opt.addEventListener('click', () => {
-            document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
-            opt.classList.add('selected');
-            opt.querySelector('input').checked = true;
-          });
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    opt.querySelector('input').checked = true;
+  });
 });
 
 /* =========================================================
-           PAX STEPPER — plus / minus for "Bilangan Kehadiran"
-           ---------------------------------------------------------
-           The buttons are the main control; the number stays typable
-           so a big family does not need nine taps. Two rules keep the
-           two input routes from fighting each other:
-             - focus selects the whole number, so tapping the field and
-               typing 5 gives 5, not 15 appended onto what was there
-             - the value is only rewritten on blur, never mid-keystroke,
-               otherwise a half-typed number gets mangled as it is typed
-           Either way the value that reaches the database is 1-10, which
-           is what the server-side check accepts.
-           ========================================================= */
+   GUEST IDENTITY — who is allowed to change a row
+   ---------------------------------------------------------
+   A name is not proof of identity. At a Malay wedding several
+   guests genuinely share a name, so keying on the name alone
+   meant whoever typed it last owned it: strangers overwrote
+   each other and two real Nur Aisyahs could never both attend.
+   Identity is now (name + this device). The device keeps a
+   random id in localStorage; the database lets that id revise
+   only the row it created. Same name from another phone is
+   simply another person, with a row of their own.
+
+   The id is random and never shown anywhere public, so it
+   cannot be guessed or harvested from the wishes feed.
+
+   If a guest clears their browser data or switches phone, the
+   id is gone and they count as a new person -- their old row
+   stays and they can no longer edit it. That is the deliberate
+   trade-off for not letting strangers overwrite each other.
+   ========================================================= */
+const DEVICE_STORE = 'wm_device', MINE_STORE = 'wm_myrsvp';
+
+function newDeviceId(){
+  try{
+    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+    const a = new Uint8Array(16); crypto.getRandomValues(a);
+    return Array.from(a, b => b.toString(16).padStart(2,'0')).join('');
+  }catch(e){
+    return 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,10);
+  }
+}
+let DEVICE_ID = (function(){
+  try{
+    let id = localStorage.getItem(DEVICE_STORE);
+    if (!id){ id = newDeviceId(); localStorage.setItem(DEVICE_STORE, id); }
+    return id;
+  }catch(e){
+    /* private mode or storage blocked: still works, but this visit
+       counts as a fresh device and cannot revise a past entry */
+    return newDeviceId();
+  }
+})();
+
+function loadMine(){
+  try{ return JSON.parse(localStorage.getItem(MINE_STORE) || 'null'); }catch(e){ return null; }
+}
+function saveMine(entry){
+  try{ localStorage.setItem(MINE_STORE, JSON.stringify(entry)); }catch(e){}
+}
+
+/* prefill so the guest edits their real answers rather than
+   retyping them -- which is what makes an empty Ucapan box mean
+   "I removed it" instead of "I forgot to type it again" */
+function prefillMine(){
+  const mine = loadMine();
+  if (!mine) return;
+  document.getElementById('atName').value = mine.name || '';
+  document.getElementById('atWish').value = mine.wish || '';
+  document.getElementById('atPax').value  = clampPax(mine.pax);
+  const hadir = (mine.status !== 'Tidak Hadir');
+  document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+  const opt = document.getElementById(hadir ? 'optHadir' : 'optTidak');
+  opt.classList.add('selected');
+  opt.querySelector('input').checked = true;
+  renderPax(); renderWishCount();
+  document.getElementById('updateBanner').classList.add('show');
+  setSubmitLabel(true);
+}
+function newGuestForm(){
+  document.getElementById('attendForm').reset();
+  document.getElementById('atName').value = '';
+  document.getElementById('atWish').value = '';
+  document.getElementById('atPax').value  = 1;
+  document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+  document.getElementById('optHadir').classList.add('selected');
+  document.getElementById('optHadir').querySelector('input').checked = true;
+  renderPax(); renderWishCount();
+  document.getElementById('updateBanner').classList.remove('show');
+  document.getElementById('atResult').innerHTML = '';
+  setSubmitLabel(false);
+  document.getElementById('atName').focus();
+}
+function setSubmitLabel(isUpdate){
+  const btn = document.getElementById('atSubmitBtn');
+  btn.dataset.mode = isUpdate ? 'update' : 'new';
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M20 6 9 17l-5-5"/></svg> ' +
+                  (isUpdate ? 'Kemaskini Pengesahan' : 'Hantar Pengesahan');
+}
+
+/* =========================================================
+   PAX STEPPER — plus / minus for "Bilangan Kehadiran"
+   ---------------------------------------------------------
+   The buttons are the main control; the number stays typable
+   so a big family does not need nine taps. Two rules keep the
+   two input routes from fighting each other:
+     - focus selects the whole number, so tapping the field and
+       typing 5 gives 5, not 15 appended onto what was there
+     - the value is only rewritten on blur, never mid-keystroke,
+       otherwise a half-typed number gets mangled as it is typed
+   Either way the value that reaches the database is 1-10, which
+   is what the server-side check accepts.
+   ========================================================= */
 const PAX_MIN = 1, PAX_MAX = 10;
 
 function clampPax(v){
-          v = parseInt(v, 10);
-          if (isNaN(v)) v = PAX_MIN;
-          return Math.min(PAX_MAX, Math.max(PAX_MIN, v));
+  v = parseInt(v, 10);
+  if (isNaN(v)) v = PAX_MIN;
+  return Math.min(PAX_MAX, Math.max(PAX_MIN, v));
 }
 /* buttons + caption only -- never touches the typed text */
 function paintPax(v){
-          document.getElementById('paxMinus').disabled = (v <= PAX_MIN);
-          document.getElementById('paxPlus').disabled  = (v >= PAX_MAX);
-          document.getElementById('paxHint').textContent =
-            v === PAX_MIN ? 'Seorang sahaja' : v + ' orang (termasuk anda)';
+  document.getElementById('paxMinus').disabled = (v <= PAX_MIN);
+  document.getElementById('paxPlus').disabled  = (v >= PAX_MAX);
+  document.getElementById('paxHint').textContent =
+    v === PAX_MIN ? 'Seorang sahaja' : v + ' orang (termasuk anda)';
 }
 /* clamps the field itself -- safe only when not mid-typing */
 function renderPax(){
-          const el = document.getElementById('atPax');
-          if (!el) return;
-          const v = clampPax(el.value);
-          el.value = v;
-          paintPax(v);
+  const el = document.getElementById('atPax');
+  if (!el) return;
+  const v = clampPax(el.value);
+  el.value = v;
+  paintPax(v);
 }
 function stepPax(delta){
-          const el = document.getElementById('atPax');
-          el.value = clampPax(clampPax(el.value) + delta);
-          renderPax();
+  const el = document.getElementById('atPax');
+  el.value = clampPax(clampPax(el.value) + delta);
+  renderPax();
 }
 (function initPax(){
-          const el = document.getElementById('atPax');
-          if (!el) return;
-          el.addEventListener('focus', () => { try{ el.select(); }catch(e){} });
-          el.addEventListener('input', () => {
-            const raw = parseInt(el.value, 10);
-            if (!isNaN(raw)) paintPax(Math.min(PAX_MAX, Math.max(PAX_MIN, raw)));
-          });
-          el.addEventListener('blur',   renderPax);
-          el.addEventListener('change', renderPax);
-          renderPax();
+  const el = document.getElementById('atPax');
+  if (!el) return;
+  el.addEventListener('focus', () => { try{ el.select(); }catch(e){} });
+  el.addEventListener('input', () => {
+    const raw = parseInt(el.value, 10);
+    if (!isNaN(raw)) paintPax(Math.min(PAX_MAX, Math.max(PAX_MIN, raw)));
+  });
+  el.addEventListener('blur',   renderPax);
+  el.addEventListener('change', renderPax);
+  renderPax();
 })();
 
 /* =========================================================
-           TOAST
-           ========================================================= */
+   TOAST
+   ========================================================= */
 let toastTimer;
 function showToast(msg){
-          const t = document.getElementById('toast');
-          t.textContent = msg;
-          t.classList.add('show');
-          clearTimeout(toastTimer);
-          toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
 /* =========================================================
-           LOCATION — fill address / maps links from CONFIG
-           ========================================================= */
+   LOCATION — map embed + maps links
+   ========================================================= */
 (function initLocation(){
-          const q = encodeURIComponent(WEDDING.venueAddress || WEDDING.venueName);
-          document.getElementById('mapFrame').src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.1060147135368!2d103.29914029999999!3d3.787099199999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31c8b1749063d421%3A0x602ae37938640b4c!2sCMi%20Prestige%20Hall%20TANAH%20PUTIH!5e0!3m2!1sen!2smy!4v1789902852330!5m2!1sen!2smy`;
-          document.getElementById('gmapsBtn').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
-          document.getElementById('wazeBtn').href = `https://waze.com/ul?q=${q}&navigate=yes`;
-          document.getElementById('venueAddress').textContent = WEDDING.venueAddress;
+  const q = encodeURIComponent(WEDDING.venueAddress || WEDDING.venueName);
+  document.getElementById('mapFrame').src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.1060147135368!2d103.29914029999999!3d3.787099199999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31c8b1749063d421%3A0x602ae37938640b4c!2sCMi%20Prestige%20Hall%20TANAH%20PUTIH!5e0!3m2!1sen!2smy!4v1789902852330!5m2!1sen!2smy`;
+  document.getElementById('gmapsBtn').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+  document.getElementById('wazeBtn').href = `https://waze.com/ul?q=${q}&navigate=yes`;
+  document.getElementById('venueAddress').textContent = WEDDING.venueAddress;
 })();
 
 /* =========================================================
-           CALENDAR — .ics download + Google Calendar link
-           ========================================================= */
+   CALENDAR — .ics download + Google Calendar link
+   ========================================================= */
 function toICSDate(iso){
-          const d = new Date(iso);
-          return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+  const d = new Date(iso);
+  return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
 }
 function downloadICS(){
-          const start = toICSDate(WEDDING.startISO);
-          const end = toICSDate(WEDDING.endISO);
-          const ics = [
-            'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Umar Masyitah Wedding//EN','CALSCALE:GREGORIAN',
-            'BEGIN:VEVENT',
-            `UID:${Date.now()}@umar-masyitah-wedding`,
-            `DTSTAMP:${toICSDate(new Date().toISOString())}`,
-            `DTSTART:${start}`,
-            `DTEND:${end}`,
-            `SUMMARY:Majlis Perkahwinan ${WEDDING.groom} & ${WEDDING.bride}`,
-            `LOCATION:${WEDDING.venueAddress || WEDDING.venueName}`,
-            'DESCRIPTION:Walimatul Urus Umar & Masyitah',
-            'END:VEVENT','END:VCALENDAR'
-          ].join('\r\n');
-          const blob = new Blob([ics], {type:'text/calendar'});
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url; a.download = 'Walimatul-Urus-Umar-Masyitah.ics';
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          showToast('Fail kalendar dimuat turun ✓');
+  const start = toICSDate(WEDDING.startISO);
+  const end = toICSDate(WEDDING.endISO);
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Umar Masyitah Wedding//EN','CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    `UID:${Date.now()}@umar-masyitah-wedding`,
+    `DTSTAMP:${toICSDate(new Date().toISOString())}`,
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:Majlis Perkahwinan ${WEDDING.groom} & ${WEDDING.bride}`,
+    `LOCATION:${WEDDING.venueAddress || WEDDING.venueName}`,
+    'DESCRIPTION:Walimatul Urus Umar & Masyitah',
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'Walimatul-Urus-Umar-Masyitah.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Fail kalendar dimuat turun ✓');
 }
 (function initGCal(){
-          const fmt = iso => toICSDate(iso);
-          const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Majlis Perkahwinan '+WEDDING.groom+' & '+WEDDING.bride)}&dates=${fmt(WEDDING.startISO)}/${fmt(WEDDING.endISO)}&location=${encodeURIComponent(WEDDING.venueAddress||WEDDING.venueName)}&details=${encodeURIComponent('Walimatul Urus Umar & Masyitah')}`;
-          document.getElementById('gcalBtn').href = url;
+  const fmt = iso => toICSDate(iso);
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Majlis Perkahwinan '+WEDDING.groom+' & '+WEDDING.bride)}&dates=${fmt(WEDDING.startISO)}/${fmt(WEDDING.endISO)}&location=${encodeURIComponent(WEDDING.venueAddress||WEDDING.venueName)}&details=${encodeURIComponent('Walimatul Urus Umar & Masyitah')}`;
+  document.getElementById('gcalBtn').href = url;
 })();
 
 /* =========================================================
-           ATTENDANCE (RSVP) — stored in Supabase
-           ---------------------------------------------------------
-           Two server functions do all the work (see supabase-setup.sql):
-             submit_rsvp()    guests write; a repeat of the same name
-                              deletes the older row and keeps the newest
-             get_attendance() returns the stats + list ONLY if the code
-                              given matches the one stored in the database
-           The owner signs in by typing that code into "Nama Penuh".
-           Every submitted name is offered to get_attendance() first, so
-           the trigger word never has to appear in this file.
-           ========================================================= */
+   ATTENDANCE (RSVP) — stored in Supabase
+   ---------------------------------------------------------
+   Three server functions do the work (see supabase-setup.sql):
+     submit_rsvp()    guests write; the same name from the SAME
+                      device revises that row, from another
+                      device it is a different person
+     get_attendance() stats + full list, owner code required
+     delete_wish()    owner removes one message
+   The owner signs in by typing the code into "Nama Penuh".
+   Every submitted name is offered to get_attendance() first, so
+   the trigger word never has to appear in this file.
+   ========================================================= */
 function sbReady(){
-          return /^https:\/\/[a-z0-9-]+\.supabase\.co/.test(SUPABASE.url) && SUPABASE.anonKey.length > 40;
+  return /^https:\/\/[a-z0-9-]+\.supabase\.co/.test(SUPABASE.url) && SUPABASE.anonKey.length > 40;
 }
 async function sbRpc(fn, body){
-          const res = await fetch(SUPABASE.url.replace(/\/$/,'') + '/rest/v1/rpc/' + fn, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': SUPABASE.anonKey,
-              'Authorization': 'Bearer ' + SUPABASE.anonKey
-            },
-            body: JSON.stringify(body)
-          });
-          const text = await res.text();
-          if (!res.ok) throw new Error(res.status + ' ' + text);
-          return text ? JSON.parse(text) : null;
+  const res = await fetch(SUPABASE.url.replace(/\/$/,'') + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE.anonKey,
+      'Authorization': 'Bearer ' + SUPABASE.anonKey
+    },
+    body: JSON.stringify(body)
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(res.status + ' ' + text);
+  return text ? JSON.parse(text) : null;
 }
 
 function setSubmitBusy(busy, label){
-          const btn = document.getElementById('atSubmitBtn');
-          btn.disabled = busy;
-          btn.style.opacity = busy ? '.6' : '';
-          if (busy) btn.textContent = label || 'Menghantar...';
-          else btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M20 6 9 17l-5-5"/></svg> Hantar Pengesahan';
+  const btn = document.getElementById('atSubmitBtn');
+  btn.disabled = busy;
+  btn.style.opacity = busy ? '.6' : '';
+  if (busy) btn.textContent = label || 'Menghantar...';
+  else setSubmitLabel(btn.dataset.mode === 'update');
 }
 
 document.getElementById('attendForm').addEventListener('submit', async function(e){
-          e.preventDefault();
-          const name   = document.getElementById('atName').value.trim();
-          const wish   = document.getElementById('atWish').value.trim();
-          const pax    = clampPax(document.getElementById('atPax').value);
-          const status = document.querySelector('input[name="status"]:checked').value;
+  e.preventDefault();
+  const name   = document.getElementById('atName').value.trim();
+  const wish   = document.getElementById('atWish').value.trim();
+  const pax    = clampPax(document.getElementById('atPax').value);
+  const status = document.querySelector('input[name="status"]:checked').value;
 
-          if (!name){ showToast('Sila isi nama penuh anda.'); document.getElementById('atName').focus(); return; }
-          if (!sbReady()){ showToast('Pangkalan data belum disambung (sila isi SUPABASE di dalam fail).'); return; }
+  if (!name){ showToast('Sila isi nama penuh anda.'); document.getElementById('atName').focus(); return; }
+  if (!sbReady()){ showToast('Pangkalan data belum disambung (sila isi SUPABASE di dalam fail).'); return; }
 
-          setSubmitBusy(true, 'Menghantar...');
-          try{
-            /* 1 — is this the owner's code rather than a guest name? */
-            const stats = await sbRpc('get_attendance', { p_code: name });
-            if (stats){
-              OWNER_CODE = name;
-              document.body.classList.add('owner-mode');
-              document.getElementById('atName').value = '';
-              renderOwner(stats);
-              loadWishes();
-              openOwner();
-              return;
-            }
+  setSubmitBusy(true, 'Menghantar...');
+  try{
+    /* 1 — is this the owner's code rather than a guest name? */
+    const stats = await sbRpc('get_attendance', { p_code: name });
+    if (stats){
+      OWNER_CODE = name;
+      document.body.classList.add('owner-mode');
+      document.getElementById('atName').value = '';
+      renderOwner(stats);
+      loadWishes();
+      openOwner();
+      return;
+    }
 
-            /* 2 — a normal guest RSVP (the wish is optional) */
-            const out = await sbRpc('submit_rsvp', { p_name:name, p_wish:wish, p_pax:pax, p_status:status });
-            showToast(out && out.replaced ? 'Rekod anda telah dikemaskini \u2713' : 'Terima kasih! Kehadiran anda direkodkan \u2713');
-            document.getElementById('atResult').innerHTML =
-              '<div class="wish-item" style="text-align:center;">' +
-                '<div class="who">' + escapeHTML(name) + ' &middot; ' + pax + ' pax</div>' +
-                '<div class="msg" style="font-size:14px;">' +
-                  (status === 'Hadir'
-                    ? 'Kehadiran anda telah direkodkan. :)'
-                    : 'Terima kasih atas doa. Doa anda tetap kami hargai.') +
-                '</div>' +
-                (out && out.replaced ? '<div class="when">Rekod terdahulu bagi nama ini telah digantikan.</div>' : '') +
-                (out && out.has_wish ? '<div class="when">Ucapan anda telah dipaparkan di tab Ucapan.</div>' : '') +
-              '</div>';
-            if (out && out.has_wish) loadWishes();
-            this.reset();
-            renderPax();
-            renderWishCount();
-            document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
-            document.getElementById('optHadir').classList.add('selected');
-            document.getElementById('optHadir').querySelector('input').checked = true;
-          }catch(err){
-            console.error(err);
-            showToast(String(err).indexOf('RESERVED_NAME') > -1
-              ? 'Nama tersebut tidak boleh digunakan.'
-              : 'Sambungan gagal. Sila semak internet dan cuba lagi.');
-          }finally{
-            setSubmitBusy(false);
-          }
+    /* 2 — a normal guest RSVP (the wish is optional) */
+    const out = await sbRpc('submit_rsvp', { p_name:name, p_wish:wish, p_pax:pax, p_status:status, p_device:DEVICE_ID });
+    showToast(out && out.replaced ? 'Rekod anda telah dikemaskini ✓' : 'Terima kasih! Kehadiran anda direkodkan ✓');
+    saveMine({ name:name, wish:wish, pax:pax, status:status });
+    document.getElementById('atResult').innerHTML =
+      '<div class="wish-item" style="text-align:center;">' +
+        '<div class="who" style="justify-content:center;">' + escapeHTML(name) + ' &middot; ' + pax + ' pax</div>' +
+        '<div class="msg" style="font-size:14px;">' +
+          (status === 'Hadir'
+            ? 'Kehadiran anda telah direkodkan. :)'
+            : 'Terima kasih atas doa. Doa anda tetap kami hargai.') +
+        '</div>' +
+        (out && out.replaced ? '<div class="when">Rekod anda sebelum ini telah dikemaskini.</div>' : '') +
+        (out && out.namesakes > 0 ? '<div class="when">Nota: ada tetamu lain dengan nama yang sama. Rekod anda disimpan berasingan.</div>' : '') +
+        (out && out.has_wish ? '<div class="when">Ucapan anda telah dipaparkan di tab Ucapan.</div>' : '') +
+      '</div>';
+    if (out && out.has_wish) loadWishes();
+    /* the form is left filled in on purpose -- it is now this guest's
+       own record, ready to be corrected rather than retyped */
+    document.getElementById('updateBanner').classList.add('show');
+    setSubmitLabel(true);
+  }catch(err){
+    console.error(err);
+    showToast(String(err).indexOf('RESERVED_NAME') > -1
+      ? 'Nama tersebut tidak boleh digunakan.'
+      : 'Sambungan gagal. Sila semak internet dan cuba lagi.');
+  }finally{
+    setSubmitBusy(false);
+  }
 });
 
 /* =========================================================
-           UCAPAN & DOA — public guestbook
-           ---------------------------------------------------------
-           get_wishes() returns name, message and time only. Attendance
-           status and pax never travel with it, so a guest browsing the
-           wishes cannot work out who is actually coming.
-           The owner's delete clears the MESSAGE and keeps the RSVP row,
-           so removing a wish never changes the headcount.
-           ========================================================= */
+   UCAPAN & DOA — public guestbook
+   ---------------------------------------------------------
+   get_wishes() returns name, message and time only. Attendance
+   status and pax never travel with it, so a guest browsing the
+   wishes cannot work out who is actually coming.
+   The owner's delete clears the MESSAGE and keeps the RSVP row,
+   so removing a wish never changes the headcount.
+   ========================================================= */
 let WISHES_LOADED = false;
 
 function renderWishCount(){
-          const el = document.getElementById('atWish');
-          const out = document.getElementById('wishCount');
-          if (el && out) out.textContent = el.value.length + ' / 500';
+  const el = document.getElementById('atWish');
+  const out = document.getElementById('wishCount');
+  if (el && out) out.textContent = el.value.length + ' / 500';
 }
 
 async function loadWishes(announce){
-          const el = document.getElementById('wishList');
-          if (!el) return;
-          if (!sbReady()){ el.innerHTML = '<div class="empty-state">Pangkalan data belum disambung.</div>'; return; }
-          if (!WISHES_LOADED) el.innerHTML = '<div class="empty-state">Memuatkan ucapan...</div>';
-          try{
-            const rows = await sbRpc('get_wishes', {}) || [];
-            WISHES_LOADED = true;
-            if (!rows.length){
-              el.innerHTML = '<div class="empty-state">Belum ada ucapan. Jadilah yang pertama melalui borang RSVP.</div>';
-            } else {
-              el.innerHTML = rows.map(w =>
-                '<div class="wish-item">' +
-                  '<div class="wish-head">' +
-                    '<div class="who">' + escapeHTML(w.name) + '</div>' +
-                    '<button class="wish-del" onclick="removeWish(\'' + w.id + '\')" aria-label="Padam ucapan">' +
-                      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
-                    '</button>' +
-                  '</div>' +
-                  '<div class="msg">' + escapeHTML(w.wish) + '</div>' +
-                  '<div class="when">' +
-                    new Date(w.created_at).toLocaleString('ms-MY', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) +
-                  '</div>' +
-                '</div>').join('');
-            }
-            if (announce) showToast('Ucapan dikemaskini \u2713');
-          }catch(err){
-            console.error(err);
-            el.innerHTML = '<div class="empty-state">Failed to load wishes and pray. Please reload the page.</div>';
-          }
+  const el = document.getElementById('wishList');
+  if (!el) return;
+  if (!sbReady()){ el.innerHTML = '<div class="empty-state">Pangkalan data belum disambung.</div>'; return; }
+  if (!WISHES_LOADED) el.innerHTML = '<div class="empty-state">Memuatkan ucapan...</div>';
+  try{
+    const rows = await sbRpc('get_wishes', {}) || [];
+    WISHES_LOADED = true;
+    if (!rows.length){
+      el.innerHTML = '<div class="empty-state">Belum ada ucapan. Jadilah yang pertama melalui borang RSVP.</div>';
+    } else {
+      el.innerHTML = rows.map(w =>
+        '<div class="wish-item">' +
+          '<div class="wish-head">' +
+            '<div class="who">' + escapeHTML(w.name) + '</div>' +
+            '<button class="wish-del" onclick="removeWish(\'' + w.id + '\')" aria-label="Padam ucapan">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+            '</button>' +
+          '</div>' +
+          '<div class="msg">' + escapeHTML(w.wish) + '</div>' +
+          '<div class="when">' +
+            new Date(w.created_at).toLocaleString('ms-MY', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) +
+          '</div>' +
+        '</div>').join('');
+    }
+    if (announce) showToast('Ucapan dikemaskini ✓');
+  }catch(err){
+    console.error(err);
+    el.innerHTML = '<div class="empty-state">Failed to load wishes and pray. Please reload the page.</div>';
+  }
 }
 
 async function removeWish(id){
-          if (!OWNER_CODE) return;
-          try{
-            const out = await sbRpc('delete_wish', { p_code: OWNER_CODE, p_id: id });
-            if (out && out.ok){
-              loadWishes();
-              refreshOwner(true);          /* update the counts, keep our own toast */
-              showToast('Ucapan dipadam \u2713');
-            } else {
-              showToast('Sesi tamat. Sila masukkan kod semula.');
-              OWNER_CODE = null;
-              document.body.classList.remove('owner-mode');
-            }
-          }catch(err){
-            console.error(err);
-            showToast('Gagal memadam. Sila cuba lagi.');
-          }
+  if (!OWNER_CODE) return;
+  try{
+    const out = await sbRpc('delete_wish', { p_code: OWNER_CODE, p_id: id });
+    if (out && out.ok){
+      loadWishes();
+      refreshOwner(true);          /* update the counts, keep our own toast */
+      showToast('Ucapan dipadam ✓');
+    } else {
+      showToast('Sesi tamat. Sila masukkan kod semula.');
+      OWNER_CODE = null;
+      document.body.classList.remove('owner-mode');
+    }
+  }catch(err){
+    console.error(err);
+    showToast('Gagal memadam. Sila cuba lagi.');
+  }
 }
 
 (function initWish(){
-          const el = document.getElementById('atWish');
-          if (el){ el.addEventListener('input', renderWishCount); renderWishCount(); }
-          loadWishes();
+  const el = document.getElementById('atWish');
+  if (el){ el.addEventListener('input', renderWishCount); renderWishCount(); }
+  loadWishes();
+  setSubmitLabel(false);
+  prefillMine();          /* returning guest? open their own answers */
 })();
 
 /* =========================================================
-           OWNER DASHBOARD
-           ========================================================= */
+   OWNER DASHBOARD
+   ========================================================= */
 let OWNER_CODE = null;
 let OWNER_ROWS = [];
 
 function openOwner(){
-          closeSheets();
-          const el = document.getElementById('sheet-owner');
-          el.classList.add('open');
-          el.scrollTop = 0;
+  closeSheets();
+  const el = document.getElementById('sheet-owner');
+  el.classList.add('open');
+  el.scrollTop = 0;
 }
 function renderOwner(d){
-          OWNER_ROWS = d.rows || [];
-          document.getElementById('ownerStats').innerHTML = [
-            ['total',     d.total,          'Jumlah RSVP'],
-            ['accent',    d.pax_hadir,      'Jumlah Pax Hadir'],
-            ['hadir',     d.hadir,          'Hadir'],
-            ['tidak',     d.tidak,          'Tidak Hadir'],
-            ['wishes',    d.wishes || 0,    'Ucapan Diterima']
-          ].map(([cls, num, lbl]) =>
-            '<div class="stat-box ' + (cls === 'accent' ? 'accent' : '') + '">' +
-              '<div class="num">' + num + '</div><div class="lbl">' + lbl + '</div></div>'
-          ).join('');
+  OWNER_ROWS = d.rows || [];
+  document.getElementById('ownerStats').innerHTML = [
+    ['total',     d.total,          'Jumlah RSVP'],
+    ['accent',    d.pax_hadir,      'Jumlah Pax Hadir'],
+    ['hadir',     d.hadir,          'Hadir'],
+    ['tidak',     d.tidak,          'Tidak Hadir'],
+    ['wishes',    d.wishes || 0,    'Ucapan Diterima'],
+    ['dupes',     d.dupes  || 0,    'Nama Berulang']
+  ].map(([cls, num, lbl]) =>
+    '<div class="stat-box ' + (cls === 'accent' ? 'accent' : '') + '">' +
+      '<div class="num">' + num + '</div><div class="lbl">' + lbl + '</div></div>'
+  ).join('');
 
-          document.getElementById('ownerSync').textContent =
-            'Dikemaskini ' + new Date().toLocaleString('ms-MY', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+  document.getElementById('ownerSync').textContent =
+    'Dikemaskini ' + new Date().toLocaleString('ms-MY', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
 
-          const el = document.getElementById('ownerList');
-          if (!OWNER_ROWS.length){
-            el.innerHTML = '<div class="empty-state">Belum ada sesiapa mengesahkan kehadiran.</div>';
-            return;
-          }
-          el.innerHTML = OWNER_ROWS.map(r =>
-            '<div class="wish-item">' +
-              '<div class="wish-head">' +
-                '<div>' +
-                  '<div class="who">' + escapeHTML(r.name) + ' &middot; ' + r.pax + ' pax</div>' +
-                  '<div class="when">' +
-                    new Date(r.created_at).toLocaleString('ms-MY', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) +
-                  '</div>' +
-                '</div>' +
-                '<span class="badge ' + (r.status === 'Hadir' ? 'hadir' : 'tidak') + '">' + r.status + '</span>' +
-              '</div>' +
-              (r.wish ? '<div class="msg" style="font-size:14px; margin-top:6px;">' + escapeHTML(r.wish) + '</div>' : '') +
-            '</div>').join('');
+  const el = document.getElementById('ownerList');
+  if (!OWNER_ROWS.length){
+    el.innerHTML = '<div class="empty-state">Belum ada sesiapa mengesahkan kehadiran.</div>';
+    return;
+  }
+  el.innerHTML = OWNER_ROWS.map(r =>
+    '<div class="wish-item">' +
+      '<div class="wish-head">' +
+        '<div>' +
+          '<div class="who">' + escapeHTML(r.name) + ' &middot; ' + r.pax + ' pax' +
+            (r.same_name > 1 ? '<span class="badge dupe" title="Ada ' + r.same_name + ' tetamu dengan nama ini">nama sama &times;' + r.same_name + '</span>' : '') +
+          '</div>' +
+          '<div class="when">' +
+            new Date(r.created_at).toLocaleString('ms-MY', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) +
+            (r.updated_at && r.updated_at !== r.created_at
+              ? ' &middot; dikemaskini ' + new Date(r.updated_at).toLocaleString('ms-MY', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'})
+              : '') +
+          '</div>' +
+        '</div>' +
+        '<span class="badge ' + (r.status === 'Hadir' ? 'hadir' : 'tidak') + '">' + r.status + '</span>' +
+      '</div>' +
+      (r.wish ? '<div class="msg" style="font-size:14px; margin-top:6px;">' + escapeHTML(r.wish) + '</div>' : '') +
+    '</div>').join('');
 }
 async function refreshOwner(silent){
-          if (!OWNER_CODE) return;
-          try{
-            const d = await sbRpc('get_attendance', { p_code: OWNER_CODE });
-            if (d){ renderOwner(d); if (!silent){ loadWishes(); showToast('Senarai dikemaskini \u2713'); } }
-            else { showToast('Sesi tamat. Sila masukkan kod semula.'); closeSheets(); OWNER_CODE = null; }
-          }catch(err){
-            console.error(err);
-            showToast('Sambungan gagal. Sila cuba lagi.');
-          }
+  if (!OWNER_CODE) return;
+  try{
+    const d = await sbRpc('get_attendance', { p_code: OWNER_CODE });
+    if (d){ renderOwner(d); if (!silent){ loadWishes(); showToast('Senarai dikemaskini ✓'); } }
+    else { showToast('Sesi tamat. Sila masukkan kod semula.'); closeSheets(); OWNER_CODE = null; }
+  }catch(err){
+    console.error(err);
+    showToast('Sambungan gagal. Sila cuba lagi.');
+  }
 }
 function downloadRSVPCSV(){
-          if (!OWNER_ROWS.length){ showToast('Tiada rekod untuk dimuat turun.'); return; }
-          const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-          const csv = ['Nama,Pax,Status,Ucapan,Masa Hantar']
-            .concat(OWNER_ROWS.map(r => [r.name, r.pax, r.status, r.wish || '',
-              new Date(r.created_at).toLocaleString('ms-MY')].map(esc).join(',')))
-            .join('\r\n');
-          const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8'});
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url; a.download = 'RSVP-Umar-Masyitah.csv';
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          showToast('Fail CSV dimuat turun \u2713');
+  if (!OWNER_ROWS.length){ showToast('Tiada rekod untuk dimuat turun.'); return; }
+  const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const csv = ['Nama,Pax,Status,Ucapan,Masa Hantar,Masa Kemaskini']
+    .concat(OWNER_ROWS.map(r => [r.name, r.pax, r.status, r.wish || '',
+      new Date(r.created_at).toLocaleString('ms-MY'),
+      r.updated_at && r.updated_at !== r.created_at ? new Date(r.updated_at).toLocaleString('ms-MY') : ''
+      ].map(esc).join(',')))
+    .join('\r\n');
+  const blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'RSVP-Umar-Masyitah.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Fail CSV dimuat turun ✓');
 }
 
 function escapeHTML(str){
-          return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
     </script>
 </body>
