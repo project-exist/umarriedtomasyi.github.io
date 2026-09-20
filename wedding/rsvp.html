@@ -1293,7 +1293,7 @@
 
             <div class="date-feature" style="margin-top:6px;">
                 <div class="df-main">Sabtu <span class="df-pipe">|</span> 19 Disember 2026</div>
-                <div class="df-hijri" style="font-size:12px; letter-spacing:.06em;">CMi Damansara Hall &middot; 11.00 AM &ndash; 4.00 PM</div>
+                <div class="df-hijri" style="font-size:12px; letter-spacing:.06em;">CMi Prestige Hall Tanah Putih &middot; 11.00 AM &ndash; 4.00 PM</div>
             </div>
 
             <div class="card">
@@ -1360,15 +1360,15 @@
 
             <div class="card" style="text-align:center;">
                 <h3>Dewan Majlis</h3>
-                <p style="font-family:'Jost',sans-serif; font-size:16px; font-weight:500; letter-spacing:.02em;">CMi Damansara Hall</p>
-                <p class="muted" id="venueAddress">Berjaya Megamall, Jalan Tun Ismail, 25000 Kuantan, Pahang</p>
+                <p style="font-family:'Jost',sans-serif; font-size:16px; font-weight:500; letter-spacing:.02em;">CMi Prestige Hall</p>
+                <p class="muted" id="venueAddress">Tanah Putih, Lot 16606, Batu 3, Industrial Area, 25150 Kuantan, Pahang</p>
                 <p class="muted">Sabtu, 19 Disember 2026 · 11.00 AM – 4.00 PM</p>
             </div>
 
             <div class="map-wrap">
                 <iframe id="mapFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src=""></iframe>
             </div>
-            <div class="placeholder-note">Alamat di atas berdasarkan carian "CMi Damansara Hall Kuantan". Sila semak semula pautan Google Maps sebenar jika ada perbezaan tingkat/unit.</div>
+            <div class="placeholder-note">Alamat di atas berdasarkan carian "CMi Prestige Hall Tanah Putih". Sila semak semula pautan Google Maps sebenar jika ada perbezaan tingkat/unit.</div>
 
             <a class="btn solid" id="gmapsBtn" href="#" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" /><circle cx="12" cy="9" r="2.4" /></svg>
@@ -1551,8 +1551,8 @@ const WEDDING = {
           bride: "Masyitah Hasanuddin",
           startISO: "2026-12-19T11:00:00+08:00",
           endISO:   "2026-12-19T16:00:00+08:00",
-          venueName: "CMi Damansara Hall",
-          venueAddress: "CMi Damansara Hall, No.19, Lorong BDK 3/8, Kawasan Industri Bandar Damansara, 26100 Kuantan, Pahang"
+          venueName: "CMi Prestige Hall",
+          venueAddress: "CMi Prestige Hall Tanah Putih, Lot 16606, Batu 3, Industrial Area, 25150 Kuantan, Pahang"
 };
 
 /* ---------------------------------------------------------
@@ -1861,7 +1861,7 @@ function showToast(msg){
            ========================================================= */
 (function initLocation(){
           const q = encodeURIComponent(WEDDING.venueAddress || WEDDING.venueName);
-          document.getElementById('mapFrame').src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1407.3419969715428!2d103.34002539033254!3d3.903109979757544!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31c87f7d1d32aec3%3A0x5e00e5b81a8090a3!2sCMi%20Damansara%20Hall%20KUANTAN!5e0!3m2!1sen!2smy!4v1789832087922!5m2!1sen!2smy`;
+          document.getElementById('mapFrame').src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.1060147135368!2d103.29914029999999!3d3.787099199999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31c8b1749063d421%3A0x602ae37938640b4c!2sCMi%20Prestige%20Hall%20TANAH%20PUTIH!5e0!3m2!1sen!2smy!4v1789902852330!5m2!1sen!2smy`;
           document.getElementById('gmapsBtn').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
           document.getElementById('wazeBtn').href = `https://waze.com/ul?q=${q}&navigate=yes`;
           document.getElementById('venueAddress').textContent = WEDDING.venueAddress;
